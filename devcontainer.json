@@ -1,0 +1,15 @@
+{
+  "name": "Cursor Workspace",
+  "postCreateCommand": "sudo apt update && sudo apt install -y zsh && chsh -s $(which zsh) coder",
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "zsh"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "zsh-autosuggestions"
+      ]
+    }
+  }
+}
