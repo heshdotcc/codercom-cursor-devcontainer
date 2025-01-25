@@ -28,11 +28,24 @@ RUN curl -Lo ./kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 \
     && chmod +x ./kind \
     && mv ./kind /usr/local/bin/kind
 
-# Configure Zsh with GRML
+# Install and configure GRML Zsh
 RUN wget -O /home/coder/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshrc \
     && wget -O /home/coder/.zshrc.local https://git.grml.org/f/grml-etc-core/etc/skel/.zshrc \
     && chown coder:coder /home/coder/.zshrc /home/coder/.zshrc.local \
     && chsh -s $(which zsh) coder
+
+# Install code-server and ensure PATH is updated
+RUN mkdir -p /tmp/code-server/bin && \
+    curl -#fL -o ~/.cache/code-server/code-server-4.96.4-linux-amd64.tar.gz \
+        https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz && \
+    mkdir -p /tmp/code-server/lib && \
+    tar -C /tmp/code-server/lib -xzf ~/.cache/code-server/code-server-4.96.4-linux-amd64.tar.gz && \
+    mv -f /tmp/code-server/lib/code-server-4.96.4-linux-amd64 /tmp/code-server/lib/code-server-4.96.4 && \
+    ln -fs /tmp/code-server/lib/code-server-4.96.4/bin/code-server /tmp/code-server/bin/code-server && \
+    echo 'export PATH="/tmp/code-server/bin:$PATH"' >> /etc/profile
+
+# Set PATH for code-server during build
+ENV PATH="/tmp/code-server/bin:$PATH"
 
 # Install code-server extensions
 USER coder
