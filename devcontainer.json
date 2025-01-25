@@ -1,24 +1,10 @@
 {
   "name": "Cloud Development Environment (CDE) Workspace",
   "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/rust:1": {
-      "version": "1.72"
-    },
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.20"
-    }
+    "dockerfile": "./Dockerfile"
   },
   "customizations": {
     "vscode": {
-      "settings": {
-        "editor.formatOnSave": true,
-        "editor.tabSize": 4,
-        "editor.insertSpaces": true
-      },
       "extensions": [
         "rust-lang.rust-analyzer",
         "golang.go",
@@ -26,14 +12,15 @@
         "GitHub.copilot",
         "eamodio.gitlens",
         "Continue.continue"
-      ]
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "workbench.colorTheme": "GitHub Dark Default"
+      }
     }
   },
-  "postCreateCommand": "cargo install aide && cargo install cargo-edit",
-  "remoteUser": "vscode",
-  "mounts": [
-    "source=${localWorkspaceFolder}/.cargo,target=/home/vscode/.cargo,type=bind,consistency=cached"
-  ],
+  "postCreateCommand": "kubectl version --client && kind version",
+  "remoteUser": "coder",
   "portsAttributes": {
     "8080": {
       "label": "Rust App",
@@ -44,8 +31,5 @@
       "onAutoForward": "openBrowser"
     }
   },
-  "forwardPorts": [8080, 3000],
-  "remoteEnv": {
-    "GITHUB_TOKEN": "${localEnv:GITHUB_TOKEN}"
-  }
+  "forwardPorts": [8080, 3000]
 }
