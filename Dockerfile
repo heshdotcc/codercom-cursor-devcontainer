@@ -34,31 +34,5 @@ RUN wget -O /home/coder/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshr
     && chown coder:coder /home/coder/.zshrc /home/coder/.zshrc.local \
     && chsh -s $(which zsh) coder
 
-# Install code-server
-USER root
-RUN mkdir -p /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli && \
-    curl -#fL -o /tmp/code-server/lib/code-server-4.96.4-linux-amd64.tar.gz \
-        https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz && \
-    tar -C /tmp/code-server/lib -xzf /tmp/code-server/lib/code-server-4.96.4-linux-amd64.tar.gz && \
-    mv /tmp/code-server/lib/code-server-4.96.4-linux-amd64 /tmp/code-server/lib/code-server-4.96.4 && \
-    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /etc/profile && \
-    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /home/coder/.zshrc.local
-
-# Set PATH for all users
-ENV PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"
-
-# Install code-server extensions as coder user
-USER coder
-RUN /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension rust-lang.rust-analyzer || echo "Failed to install rust-analyzer" \
-    && /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension golang.go || echo "Failed to install golang" \
-    && /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension GitHub.github-vscode-theme || echo "Failed to install GitHub theme" \
-    && /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension GitHub.copilot || echo "Failed to install GitHub Copilot" \
-    && /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension eamodio.gitlens || echo "Failed to install GitLens" \
-    && /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli/code-server --install-extension Continue.continue || echo "Failed to install Continue.dev"
-
-# Set default code-server theme
-RUN mkdir -p ~/.config/Code/User \
-    && echo '{ "workbench.colorTheme": "GitHub Dark Default" }' > ~/.config/Code/User/settings.json
-
 # Set the workspace directory
 WORKDIR /workspaces
