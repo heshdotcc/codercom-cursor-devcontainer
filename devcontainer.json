@@ -1,35 +1,19 @@
 {
-  "name": "Cloud Development Environment (CDE) Workspace",
-  "build": {
-    "dockerfile": "./Dockerfile"
+  "name": "Cloud Development Environment (CDE)",
+  "image": "ghcr.io/coder/devcontainers/base:ubuntu",
+  "features": {
+    "rust": {},
+    "go": {}
   },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "rust-lang.rust-analyzer",
-        "golang.go",
-        "GitHub.github-vscode-theme",
-        "GitHub.copilot",
-        "eamodio.gitlens",
-        "Continue.continue"
-      ],
-      "settings": {
-        "editor.formatOnSave": true,
-        "workbench.colorTheme": "GitHub Dark Default"
-      }
-    }
-  },
+  "extensions": [
+    "rust-lang.rust-analyzer",
+    "golang.go",
+    "GitHub.github-vscode-theme",
+    "GitHub.copilot",
+    "eamodio.gitlens",
+    "Continue.continue"
+  ],
   "postCreateCommand": "kubectl version --client && kind version",
-  "remoteUser": "coder",
-  "portsAttributes": {
-    "8080": {
-      "label": "Rust App",
-      "onAutoForward": "openBrowser"
-    },
-    "3000": {
-      "label": "Go App",
-      "onAutoForward": "openBrowser"
-    }
-  },
-  "forwardPorts": [8080, 3000]
+  "forwardPorts": [8080, 3000],
+  "remoteUser": "coder"
 }
