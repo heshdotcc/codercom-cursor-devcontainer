@@ -40,9 +40,10 @@ RUN mkdir -p /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli &
         https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz && \
     tar -C /tmp/code-server/lib -xzf /tmp/code-server/lib/code-server-4.96.4-linux-amd64.tar.gz && \
     mv /tmp/code-server/lib/code-server-4.96.4-linux-amd64 /tmp/code-server/lib/code-server-4.96.4 && \
-    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /etc/profile
+    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /etc/profile && \
+    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /home/coder/.zshrc.local
 
-# Set PATH during the build phase
+# Set PATH for all users
 ENV PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"
 
 # Install code-server extensions
@@ -58,4 +59,5 @@ RUN code-server --install-extension rust-lang.rust-analyzer || echo "Failed to i
 RUN mkdir -p ~/.config/Code/User \
     && echo '{ "workbench.colorTheme": "GitHub Dark Default" }' > ~/.config/Code/User/settings.json
 
+# Set the workspace directory
 WORKDIR /workspaces
