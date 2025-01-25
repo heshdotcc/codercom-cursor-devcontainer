@@ -1,4 +1,4 @@
-FROM ghcr.io/coder/enterprise-base:ubuntu
+FROM codercom/enterprise-base:ubuntu
 
 # Install essential tools and Zsh with GRML
 USER root
