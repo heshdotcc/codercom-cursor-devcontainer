@@ -1,19 +1,12 @@
 {
   "name": "Cloud Development Environment (CDE)",
-  "image": "ghcr.io/coder/devcontainers/base:ubuntu",
+  "build": {
+    "dockerfile": "./Dockerfile"
+  },
   "features": {
     "rust": {},
     "go": {}
   },
-  "extensions": [
-    "rust-lang.rust-analyzer",
-    "golang.go",
-    "GitHub.github-vscode-theme",
-    "GitHub.copilot",
-    "eamodio.gitlens",
-    "Continue.continue"
-  ],
-  "postCreateCommand": "kubectl version --client && kind version",
   "forwardPorts": [8080, 3000],
   "remoteUser": "coder"
 }
