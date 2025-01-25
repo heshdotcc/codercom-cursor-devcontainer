@@ -1,8 +1,6 @@
 {
   "name": "Cloud Development Environment (CDE)",
-  "build": {
-    "dockerfile": "./Dockerfile"
-  },
+  "image": "codercom/enterprise-base:ubuntu",
   "features": {
     "rust": {},
     "go": {}
