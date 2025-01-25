@@ -34,27 +34,25 @@ RUN wget -O /home/coder/.zshrc https://git.grml.org/f/grml-etc-core/etc/zsh/zshr
     && chown coder:coder /home/coder/.zshrc /home/coder/.zshrc.local \
     && chsh -s $(which zsh) coder
 
-# Install code-server and ensure PATH is updated
-RUN mkdir -p /tmp/code-server/bin && \
-    curl -#fL -o ~/.cache/code-server/code-server-4.96.4-linux-amd64.tar.gz \
+# Install code-server in the default /tmp/code-server path
+RUN mkdir -p /tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli && \
+    curl -#fL -o /tmp/code-server/lib/code-server-4.96.4-linux-amd64.tar.gz \
         https://github.com/coder/code-server/releases/download/v4.96.4/code-server-4.96.4-linux-amd64.tar.gz && \
-    mkdir -p /tmp/code-server/lib && \
-    tar -C /tmp/code-server/lib -xzf ~/.cache/code-server/code-server-4.96.4-linux-amd64.tar.gz && \
-    mv -f /tmp/code-server/lib/code-server-4.96.4-linux-amd64 /tmp/code-server/lib/code-server-4.96.4 && \
-    ln -fs /tmp/code-server/lib/code-server-4.96.4/bin/code-server /tmp/code-server/bin/code-server && \
-    echo 'export PATH="/tmp/code-server/bin:$PATH"' >> /etc/profile
+    tar -C /tmp/code-server/lib -xzf /tmp/code-server/lib/code-server-4.96.4-linux-amd64.tar.gz && \
+    mv /tmp/code-server/lib/code-server-4.96.4-linux-amd64 /tmp/code-server/lib/code-server-4.96.4 && \
+    echo 'export PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"' >> /etc/profile
 
-# Set PATH for code-server during build
-ENV PATH="/tmp/code-server/bin:$PATH"
+# Set PATH during the build phase
+ENV PATH="/tmp/code-server/lib/code-server-4.96.4/lib/vscode/bin/remote-cli:$PATH"
 
 # Install code-server extensions
 USER coder
-RUN code-server --install-extension rust-lang.rust-analyzer \
-    && code-server --install-extension golang.go \
-    && code-server --install-extension GitHub.github-vscode-theme \
-    && code-server --install-extension GitHub.copilot \
-    && code-server --install-extension eamodio.gitlens \
-    && code-server --install-extension Continue.continue
+RUN code-server --install-extension rust-lang.rust-analyzer || echo "Failed to install rust-analyzer" \
+    && code-server --install-extension golang.go || echo "Failed to install golang" \
+    && code-server --install-extension GitHub.github-vscode-theme || echo "Failed to install GitHub theme" \
+    && code-server --install-extension GitHub.copilot || echo "Failed to install GitHub Copilot" \
+    && code-server --install-extension eamodio.gitlens || echo "Failed to install GitLens" \
+    && code-server --install-extension Continue.continue || echo "Failed to install Continue.dev"
 
 # Set default code-server theme
 RUN mkdir -p ~/.config/Code/User \
